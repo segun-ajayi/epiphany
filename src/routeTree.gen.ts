@@ -18,8 +18,8 @@ import { Route as EventsRouteImport } from './routes/events'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as SermonsIdRouteImport } from './routes/sermons.$id'
-import { Route as EventsIdRouteImport } from './routes/events.$id'
+import { Route as SermonsIdRouteImport } from './routes/sermons_.$id'
+import { Route as EventsIdRouteImport } from './routes/events_.$id'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -67,25 +67,25 @@ const IndexRoute = IndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const SermonsIdRoute = SermonsIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => SermonsRoute,
+  id: '/sermons_/$id',
+  path: '/sermons/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const EventsIdRoute = EventsIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => EventsRoute,
+  id: '/events_/$id',
+  path: '/events/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
-  '/events': typeof EventsRouteWithChildren
+  '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
   '/give': typeof GiveRoute
   '/ministries': typeof MinistriesRoute
-  '/sermons': typeof SermonsRouteWithChildren
+  '/sermons': typeof SermonsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/events/$id': typeof EventsIdRoute
   '/sermons/$id': typeof SermonsIdRoute
@@ -94,11 +94,11 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
-  '/events': typeof EventsRouteWithChildren
+  '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
   '/give': typeof GiveRoute
   '/ministries': typeof MinistriesRoute
-  '/sermons': typeof SermonsRouteWithChildren
+  '/sermons': typeof SermonsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/events/$id': typeof EventsIdRoute
   '/sermons/$id': typeof SermonsIdRoute
@@ -108,14 +108,14 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
-  '/events': typeof EventsRouteWithChildren
+  '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
   '/give': typeof GiveRoute
   '/ministries': typeof MinistriesRoute
-  '/sermons': typeof SermonsRouteWithChildren
+  '/sermons': typeof SermonsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/events/$id': typeof EventsIdRoute
-  '/sermons/$id': typeof SermonsIdRoute
+  '/events_/$id': typeof EventsIdRoute
+  '/sermons_/$id': typeof SermonsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -155,20 +155,22 @@ export interface FileRouteTypes {
     | '/ministries'
     | '/sermons'
     | '/sitemap.xml'
-    | '/events/$id'
-    | '/sermons/$id'
+    | '/events_/$id'
+    | '/sermons_/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
-  EventsRoute: typeof EventsRouteWithChildren
+  EventsRoute: typeof EventsRoute
   GalleryRoute: typeof GalleryRoute
   GiveRoute: typeof GiveRoute
   MinistriesRoute: typeof MinistriesRoute
-  SermonsRoute: typeof SermonsRouteWithChildren
+  SermonsRoute: typeof SermonsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  EventsIdRoute: typeof EventsIdRoute
+  SermonsIdRoute: typeof SermonsIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -236,66 +238,36 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/sermons/$id': {
-      id: '/sermons/$id'
-      path: '/$id'
+    '/sermons_/$id': {
+      id: '/sermons_/$id'
+      path: '/sermons/$id'
       fullPath: '/sermons/$id'
       preLoaderRoute: typeof SermonsIdRouteImport
-      parentRoute: typeof SermonsRoute
+      parentRoute: typeof rootRouteImport
     }
-    '/events/$id': {
-      id: '/events/$id'
-      path: '/$id'
+    '/events_/$id': {
+      id: '/events_/$id'
+      path: '/events/$id'
       fullPath: '/events/$id'
       preLoaderRoute: typeof EventsIdRouteImport
-      parentRoute: typeof EventsRoute
+      parentRoute: typeof rootRouteImport
     }
   }
 }
-
-interface EventsRouteChildren {
-  EventsIdRoute: typeof EventsIdRoute
-}
-
-const EventsRouteChildren: EventsRouteChildren = {
-  EventsIdRoute: EventsIdRoute,
-}
-
-const EventsRouteWithChildren =
-  EventsRoute._addFileChildren(EventsRouteChildren)
-
-interface SermonsRouteChildren {
-  SermonsIdRoute: typeof SermonsIdRoute
-}
-
-const SermonsRouteChildren: SermonsRouteChildren = {
-  SermonsIdRoute: SermonsIdRoute,
-}
-
-const SermonsRouteWithChildren =
-  SermonsRoute._addFileChildren(SermonsRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   ContactRoute: ContactRoute,
-  EventsRoute: EventsRouteWithChildren,
+  EventsRoute: EventsRoute,
   GalleryRoute: GalleryRoute,
   GiveRoute: GiveRoute,
   MinistriesRoute: MinistriesRoute,
-  SermonsRoute: SermonsRouteWithChildren,
+  SermonsRoute: SermonsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  EventsIdRoute: EventsIdRoute,
+  SermonsIdRoute: SermonsIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { EVENTS, CHURCH } from "@/data/church";
 
-export const Route = createFileRoute("/events/$id")({
+export const Route = createFileRoute("/events_/$id")({
   loader: ({ params }) => {
     const event = EVENTS.find((e) => e.id === params.id);
     if (!event) throw notFound();
