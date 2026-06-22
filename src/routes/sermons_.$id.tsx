@@ -3,7 +3,7 @@ import { ArrowLeft, Play, Headphones, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SERMONS } from "@/data/church";
 
-export const Route = createFileRoute("/sermons/$id")({
+export const Route = createFileRoute("/sermons_/$id")({
   loader: ({ params }) => {
     const sermon = SERMONS.find((s) => s.id === params.id);
     if (!sermon) throw notFound();
