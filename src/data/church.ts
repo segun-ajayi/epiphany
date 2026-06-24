@@ -21,6 +21,48 @@ export const CHURCH = {
 
 export const IMAGES = { heroChurch, churchExterior, congregation, bible };
 
+/**
+ * GALLERY — auto-imported from `src/assets/galleryPictures/`.
+ *
+ * Drop any image (jpg/jpeg/png/webp/avif/gif/svg) into that folder and it will
+ * appear in the gallery automatically on the next build. The filename (without
+ * extension) becomes the caption; prefix with a number (e.g. `01-easter.jpg`)
+ * to control display order.
+ *
+ * Optionally tag a photo with a category by including `__category` in the
+ * filename, e.g. `05-baptism__Worship.jpg` → category "Worship".
+ */
+export type GalleryPhoto = {
+  id: string;
+  src: string;
+  alt: string;
+  category: string;
+};
+
+const galleryModules = import.meta.glob<{ default: string }>(
+  "../assets/galleryPictures/*.{jpg,jpeg,png,webp,avif,gif,svg}",
+  { eager: true },
+);
+
+export const GALLERY: GalleryPhoto[] = Object.entries(galleryModules)
+  .map(([path, mod]) => {
+    const file = path.split("/").pop() ?? path;
+    const base = file.replace(/\.[^.]+$/, "");
+    const [namePart, categoryPart] = base.split("__");
+    const cleanName = namePart.replace(/^\d+[-_\s]*/, "").replace(/[-_]+/g, " ").trim();
+    return {
+      id: base,
+      src: mod.default,
+      alt: cleanName || "Gallery photo",
+      category: categoryPart?.trim() || "All",
+      _sort: file,
+    };
+  })
+  .sort((a, b) => a._sort.localeCompare(b._sort))
+  .map(({ _sort, ...rest }) => rest);
+
+export const GALLERY_CATEGORIES = ["All", ...Array.from(new Set(GALLERY.map((p) => p.category))).filter((c) => c !== "All")];
+
 export const SERVICE_TIMES = [
   {
     day: "Sunday",
