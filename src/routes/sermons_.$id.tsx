@@ -1,7 +1,8 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, Play, Headphones, FileText } from "lucide-react";
+import { ArrowLeft, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SERMONS } from "@/data/church";
+import { SermonMediaActions } from "@/components/sermon-media";
 
 export const Route = createFileRoute("/sermons_/$id")({
   loader: ({ params }) => {
