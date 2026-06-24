@@ -61,9 +61,7 @@ function SermonsPage() {
             <p className="mt-3 opacity-80">{featured.speaker} · {featured.scripture}</p>
             <p className="mt-4 opacity-90 leading-relaxed">{featured.description}</p>
             <div className="mt-6 flex flex-wrap gap-3">
-              <Button variant="hero"><Play className="size-4" /> Watch</Button>
-              <Button variant="ghostLight"><Headphones className="size-4" /> Listen</Button>
-              <Button variant="ghostLight"><FileText className="size-4" /> Notes</Button>
+              <SermonMediaActions sermon={featured} watchVariant="hero" secondaryVariant="ghostLight" />
             </div>
           </div>
         </Card>
