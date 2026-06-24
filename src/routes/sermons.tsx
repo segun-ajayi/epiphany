@@ -1,11 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Play, Headphones, FileText, Search, Calendar } from "lucide-react";
+import { Play, Search, Calendar } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SERMONS, IMAGES } from "@/data/church";
 import { PageHero } from "./about";
+import { SermonMediaActions } from "@/components/sermon-media";
 
 export const Route = createFileRoute("/sermons")({
   head: () => ({
