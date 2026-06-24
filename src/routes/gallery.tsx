@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { X } from "lucide-react";
-import { IMAGES } from "@/data/church";
+import { GALLERY, GALLERY_CATEGORIES, IMAGES } from "@/data/church";
 import { PageHero } from "./about";
 
 export const Route = createFileRoute("/gallery")({
@@ -16,26 +16,16 @@ export const Route = createFileRoute("/gallery")({
   component: GalleryPage,
 });
 
-const CATS = ["All", "Worship", "Outreach", "Youth", "Celebrations", "Missions"] as const;
-
-const PHOTOS = [
-  { id: 1, src: IMAGES.heroChurch, cat: "Worship", h: 600 },
-  { id: 2, src: IMAGES.congregation, cat: "Worship", h: 420 },
-  { id: 3, src: IMAGES.churchExterior, cat: "Celebrations", h: 520 },
-  { id: 4, src: IMAGES.bible, cat: "Worship", h: 480 },
-  { id: 5, src: IMAGES.congregation, cat: "Youth", h: 560 },
-  { id: 6, src: IMAGES.heroChurch, cat: "Missions", h: 440 },
-  { id: 7, src: IMAGES.churchExterior, cat: "Outreach", h: 620 },
-  { id: 8, src: IMAGES.bible, cat: "Worship", h: 380 },
-  { id: 9, src: IMAGES.congregation, cat: "Celebrations", h: 500 },
-];
+// Deterministic-but-varied masonry heights so the layout stays interesting
+// regardless of which images are dropped into /assets/galleryPictures.
+const HEIGHTS = [420, 480, 520, 560, 600, 620, 380, 500, 440];
 
 function GalleryPage() {
-  const [cat, setCat] = useState<(typeof CATS)[number]>("All");
+  const [cat, setCat] = useState<string>("All");
   const [lightbox, setLightbox] = useState<string | null>(null);
 
   const filtered = useMemo(
-    () => (cat === "All" ? PHOTOS : PHOTOS.filter((p) => p.cat === cat)),
+    () => (cat === "All" ? GALLERY : GALLERY.filter((p) => p.category === cat)),
     [cat],
   );
 
@@ -44,37 +34,45 @@ function GalleryPage() {
       <PageHero eyebrow="Gallery" title="Moments from our life together" image={IMAGES.congregation} />
 
       <section className="container-page py-16">
-        <div className="flex flex-wrap gap-2 mb-10">
-          {CATS.map((c) => (
-            <button
-              key={c}
-              onClick={() => setCat(c)}
-              className={`px-4 py-2 text-sm rounded-full border transition ${
-                cat === c ? "bg-primary text-primary-foreground border-primary" : "border-border hover:bg-accent"
-              }`}
-            >
-              {c}
-            </button>
-          ))}
-        </div>
+        {GALLERY_CATEGORIES.length > 1 && (
+          <div className="flex flex-wrap gap-2 mb-10">
+            {GALLERY_CATEGORIES.map((c) => (
+              <button
+                key={c}
+                onClick={() => setCat(c)}
+                className={`px-4 py-2 text-sm rounded-full border transition ${
+                  cat === c ? "bg-primary text-primary-foreground border-primary" : "border-border hover:bg-accent"
+                }`}
+              >
+                {c}
+              </button>
+            ))}
+          </div>
+        )}
 
-        <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 [&>*]:mb-4">
-          {filtered.map((p) => (
-            <button
-              key={p.id}
-              onClick={() => setLightbox(p.src)}
-              className="block w-full overflow-hidden rounded-xl group break-inside-avoid"
-            >
-              <img
-                src={p.src}
-                alt={`${p.cat} photo`}
-                loading="lazy"
-                style={{ height: p.h }}
-                className="w-full object-cover group-hover:scale-105 transition-transform duration-700"
-              />
-            </button>
-          ))}
-        </div>
+        {filtered.length === 0 ? (
+          <p className="text-muted-foreground">
+            No photos yet. Drop images into <code>src/assets/galleryPictures/</code> to populate the gallery.
+          </p>
+        ) : (
+          <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 [&>*]:mb-4">
+            {filtered.map((p, i) => (
+              <button
+                key={p.id}
+                onClick={() => setLightbox(p.src)}
+                className="block w-full overflow-hidden rounded-xl group break-inside-avoid"
+              >
+                <img
+                  src={p.src}
+                  alt={p.alt}
+                  loading="lazy"
+                  style={{ height: HEIGHTS[i % HEIGHTS.length] }}
+                  className="w-full object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* VIDEO GALLERY */}
         <div className="mt-20">
