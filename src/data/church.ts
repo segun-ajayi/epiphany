@@ -146,7 +146,16 @@ export type Sermon = {
   topic: string;
   description: string;
   thumbnail: string;
+  /** YouTube video ID (the part after `v=` in a YouTube URL). */
+  youtubeId: string;
+  /** Full Mixlr showcase/embed URL, e.g. https://mixlr.com/users/USERNAME/embed */
+  mixlrUrl: string;
+  /** Path to the sermon notes PDF inside /public, e.g. /sermon-notes/light-of-the-world.pdf */
+  notesPdf: string;
 };
+
+/** Default Mixlr embed URL — replace with the church's actual Mixlr showcase URL. */
+export const MIXLR_EMBED_URL = "https://mixlr.com/users/epiphany-houston/embed";
 
 export const SERMONS: Sermon[] = [
   {
