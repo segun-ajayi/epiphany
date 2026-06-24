@@ -1,7 +1,8 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, Play, Headphones, FileText } from "lucide-react";
+import { ArrowLeft, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SERMONS } from "@/data/church";
+import { SermonMediaActions } from "@/components/sermon-media";
 
 export const Route = createFileRoute("/sermons_/$id")({
   loader: ({ params }) => {
@@ -57,9 +58,7 @@ function SermonDetail() {
           <p className="mt-2 text-muted-foreground italic">{sermon.scripture}</p>
           <p className="mt-6 text-lg leading-relaxed">{sermon.description}</p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Button variant="default"><Play className="size-4" /> Watch</Button>
-            <Button variant="outline"><Headphones className="size-4" /> Listen</Button>
-            <Button variant="outline"><FileText className="size-4" /> Download notes</Button>
+            <SermonMediaActions sermon={sermon} />
           </div>
         </div>
         <aside className="lg:sticky lg:top-28 h-fit">

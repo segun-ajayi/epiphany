@@ -146,7 +146,16 @@ export type Sermon = {
   topic: string;
   description: string;
   thumbnail: string;
+  /** YouTube video ID (the part after `v=` in a YouTube URL). */
+  youtubeId: string;
+  /** Full Mixlr showcase/embed URL, e.g. https://mixlr.com/users/USERNAME/embed */
+  mixlrUrl: string;
+  /** Path to the sermon notes PDF inside /public, e.g. /sermon-notes/light-of-the-world.pdf */
+  notesPdf: string;
 };
+
+/** Default Mixlr embed URL — replace with the church's actual Mixlr showcase URL. */
+export const MIXLR_EMBED_URL = "https://mixlr.com/users/epiphany-houston/embed";
 
 export const SERMONS: Sermon[] = [
   {
@@ -159,6 +168,9 @@ export const SERMONS: Sermon[] = [
     topic: "Discipleship",
     description: "Jesus declares himself the light that overcomes every darkness in our lives.",
     thumbnail: heroChurch,
+    youtubeId: "dQw4w9WgXcQ",
+    mixlrUrl: MIXLR_EMBED_URL,
+    notesPdf: "/sermon-notes/light-of-the-world.pdf",
   },
   {
     id: "abide-in-me",
@@ -170,6 +182,9 @@ export const SERMONS: Sermon[] = [
     topic: "Prayer",
     description: "The fruitful life flows from union with Christ.",
     thumbnail: bible,
+    youtubeId: "dQw4w9WgXcQ",
+    mixlrUrl: MIXLR_EMBED_URL,
+    notesPdf: "/sermon-notes/abide-in-me.pdf",
   },
   {
     id: "the-good-shepherd",
@@ -181,6 +196,9 @@ export const SERMONS: Sermon[] = [
     topic: "Comfort",
     description: "How the Shepherd leads, restores, and accompanies his people.",
     thumbnail: churchExterior,
+    youtubeId: "dQw4w9WgXcQ",
+    mixlrUrl: MIXLR_EMBED_URL,
+    notesPdf: "/sermon-notes/the-good-shepherd.pdf",
   },
   {
     id: "fishers-of-men",
@@ -192,6 +210,9 @@ export const SERMONS: Sermon[] = [
     topic: "Mission",
     description: "Christ's invitation to leave our nets and follow him.",
     thumbnail: congregation,
+    youtubeId: "dQw4w9WgXcQ",
+    mixlrUrl: MIXLR_EMBED_URL,
+    notesPdf: "/sermon-notes/fishers-of-men.pdf",
   },
   {
     id: "the-bread-of-life",
@@ -203,6 +224,9 @@ export const SERMONS: Sermon[] = [
     topic: "Sacraments",
     description: "How Christ satisfies the deepest hunger of the soul.",
     thumbnail: bible,
+    youtubeId: "dQw4w9WgXcQ",
+    mixlrUrl: MIXLR_EMBED_URL,
+    notesPdf: "/sermon-notes/the-bread-of-life.pdf",
   },
   {
     id: "resurrection-hope",
@@ -214,6 +238,9 @@ export const SERMONS: Sermon[] = [
     topic: "Hope",
     description: "The empty tomb changes everything — for now and forever.",
     thumbnail: heroChurch,
+    youtubeId: "dQw4w9WgXcQ",
+    mixlrUrl: MIXLR_EMBED_URL,
+    notesPdf: "/sermon-notes/resurrection-hope.pdf",
   },
 ];
 
