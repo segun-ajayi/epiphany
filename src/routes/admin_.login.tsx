@@ -8,7 +8,7 @@ import { adminLogin } from "@/lib/admin.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-export const Route = createFileRoute("/admin/login")({
+export const Route = createFileRoute("/admin_/login")({
   head: () => ({ meta: [{ title: "Admin Login — Epiphany" }, { name: "robots", content: "noindex" }] }),
   component: AdminLoginPage,
 });

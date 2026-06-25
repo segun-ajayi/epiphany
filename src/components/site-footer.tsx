@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Facebook, Instagram, Youtube, Mail, MapPin, Phone } from "lucide-react";
 import { CHURCH, SERVICE_TIMES } from "@/data/church";
+import { NewsletterForm } from "@/components/newsletter-form";
 
 export function SiteFooter() {
   return (
@@ -64,6 +65,16 @@ export function SiteFooter() {
             <li><Link to="/give" className="hover:text-gold">Give</Link></li>
             <li><Link to="/contact" className="hover:text-gold">Contact</Link></li>
           </ul>
+        </div>
+      </div>
+
+      <div className="border-t border-white/10">
+        <div className="container-page py-8 grid md:grid-cols-[1fr_auto] items-center gap-4">
+          <div>
+            <h4 className="font-display text-lg text-gold">Stay connected</h4>
+            <p className="text-sm opacity-80 mt-1">Subscribe to receive sermon notes, events, and announcements.</p>
+          </div>
+          <div className="md:w-96"><NewsletterForm /></div>
         </div>
       </div>
 
