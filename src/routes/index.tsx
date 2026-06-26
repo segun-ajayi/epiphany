@@ -12,6 +12,10 @@ import {
   SERMONS,
   TESTIMONIALS,
 } from "@/data/church";
+import { toast } from "sonner";
+import { useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { submitContact, subscribeNewsletter } from "@/lib/forms.functions.ts";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -36,6 +40,30 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
+  const submit = useServerFn(subscribeNewsletter);
+  const [pending, setPending] = useState(false);
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+  });
+
+  function update<K extends keyof typeof form>(k: K, v: string) {
+    setForm((f) => ({ ...f, [k]: v }));
+  }
+
+  async function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setPending(true);
+    try {
+      await submit({ data: form });
+      toast.success("Thank you — we'll be in touch soon!}");
+      setForm({ name: "", email: "" });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not send your subscription");
+    } finally {
+      setPending(false);
+    }
+  }
   return (
     <>
       {/* HERO */}
@@ -387,14 +415,24 @@ function Home() {
             Subscribe to our weekly newsletter for upcoming events, devotionals, and parish updates.
           </p>
           <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              alert("Thanks! We'll be in touch.");
-            }}
+            onSubmit={onSubmit}
             className="mt-8 flex flex-col sm:flex-row gap-3 max-w-xl mx-auto"
           >
-            <Input required type="text" placeholder="Your name" aria-label="Name" />
-            <Input required type="email" placeholder="Email address" aria-label="Email" />
+            <Input
+              required
+              placeholder="name"
+              aria-label="Name"
+              value={form.name}
+              onChange={(e) => update("name", e.target.value)}
+            />
+            <Input
+              required
+              type="email"
+              placeholder="Email"
+              aria-label="Email"
+              value={form.email}
+              onChange={(e) => update("email", e.target.value)}
+            />
             <Button type="submit" variant="default">
               Subscribe
             </Button>

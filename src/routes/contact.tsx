@@ -1,13 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { useState } from "react";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
+import { toast } from "sonner";
+
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { CHURCH, SERVICE_TIMES, IMAGES } from "@/data/church";
+import { submitContact } from "@/lib/forms.functions";
 import { PageHero } from "./about";
-import { useState } from "react";
-import { toast } from "sonner";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -26,41 +29,34 @@ export const Route = createFileRoute("/contact")({
 });
 
 function ContactPage() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const submit = useServerFn(submitContact);
+  const [pending, setPending] = useState(false);
+  const [form, setForm] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    subject: "",
+    message: "",
+  });
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  function update<K extends keyof typeof form>(k: K, v: string) {
+    setForm((f) => ({ ...f, [k]: v }));
+  }
+
+  async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setIsSubmitting(true);
-
-    const formData = new FormData(e.currentTarget);
-    const data = Object.fromEntries(formData.entries());
-
+    setPending(true);
     try {
-      // Replace '/api/contact' with your actual endpoint or submission URL
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-
-      if (response.ok) {
-        toast.success("Message sent successfully!", {
-          description: "Thank you — we'll be in touch soon.",
-        });
-        e.currentTarget.reset(); // Resets the form fields clean
-      } else {
-        toast.error("Something went wrong", {
-          description: "Please check your details and try again.",
-        });
-      }
-    } catch (error) {
-      toast.error("Connection failed", {
-        description: "Could not reach the server. Check your internet connection.",
-      });
+      await submit({ data: form });
+      toast.success("Thank you — we'll be in touch soon.");
+      setForm({ firstName: "", lastName: "", email: "", phone: "", subject: "", message: "" });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not send your message");
     } finally {
-      setIsSubmitting(false);
+      setPending(false);
     }
-  }; // Added missing closing brace here
+  }
 
   return (
     <>
@@ -136,33 +132,57 @@ function ContactPage() {
           </div>
 
           <form
-            onSubmit={handleSubmit}
+            onSubmit={onSubmit}
             className="rounded-3xl border border-border bg-card p-8 md:p-10 space-y-4 h-fit shadow-elegant"
           >
             <h2 className="font-display text-2xl">Send us a message</h2>
             <div className="grid sm:grid-cols-2 gap-3">
-              <Input required name="firstName" placeholder="First name" aria-label="First name" />
-              <Input required name="lastName" placeholder="Last name" aria-label="Last name" />
+              <Input
+                required
+                placeholder="First name"
+                aria-label="First name"
+                value={form.firstName}
+                onChange={(e) => update("firstName", e.target.value)}
+              />
+              <Input
+                required
+                placeholder="Last name"
+                aria-label="Last name"
+                value={form.lastName}
+                onChange={(e) => update("lastName", e.target.value)}
+              />
             </div>
-            <Input required name="email" type="email" placeholder="Email" aria-label="Email" />
-            <Input name="phone" type="tel" placeholder="Phone" aria-label="Phone" />
-            <Input name="subject" placeholder="Subject" aria-label="Subject" />
+            <Input
+              required
+              type="email"
+              placeholder="Email"
+              aria-label="Email"
+              value={form.email}
+              onChange={(e) => update("email", e.target.value)}
+            />
+            <Input
+              type="tel"
+              placeholder="Phone"
+              aria-label="Phone"
+              value={form.phone}
+              onChange={(e) => update("phone", e.target.value)}
+            />
+            <Input
+              placeholder="Subject"
+              aria-label="Subject"
+              value={form.subject}
+              onChange={(e) => update("subject", e.target.value)}
+            />
             <Textarea
               required
-              name="message"
               placeholder="Your message…"
               rows={6}
               aria-label="Message"
+              value={form.message}
+              onChange={(e) => update("message", e.target.value)}
             />
-
-            <Button
-              type="submit"
-              variant="default"
-              size="lg"
-              className="w-full"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Sending..." : "Send message"}
+            <Button type="submit" variant="default" size="lg" className="w-full" disabled={pending}>
+              {pending ? "Sending…" : "Send message"}
             </Button>
           </form>
         </div>

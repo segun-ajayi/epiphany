@@ -5,3 +5,17 @@ compatibility_flags = [ "nodejs_compat" ]
 
 [assets]
 directory = "dist/client"
+
+[vars]
+ADMIN_EMAIL = "segun_aj@yahoo.com"
+FROM_EMAIL = "noreply@acehou.org"
+ADMIN_PASSWORD = "episode@222"
+RESEND_API_KEY = "re_SpkKMK5Q_BNdstM9mniwJDL2CE18qAnRf"
+SESSION_SECRET = "9f3a7c2d8b14e6f0a1d5c7b9e2f4a8d6c3b7e9f1a5d0c8b2e6f9a3d7c1b5e0f4"
+
+# 2. Cloudflare D1 Database Binding
+[[d1_databases]]
+binding = "DB"
+database_name = "epiphany-db"
+database_id = "842c4a1e-3495-4387-8275-168bc15fb78e"
+migrations_dir = "drizzle"
