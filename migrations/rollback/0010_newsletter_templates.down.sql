@@ -1,0 +1,3 @@
+ALTER TABLE newsletter_delivery_settings DROP COLUMN template_updated_by;
+ALTER TABLE newsletter_delivery_settings DROP COLUMN template_updated_at;
+ALTER TABLE newsletter_delivery_settings DROP COLUMN active_template;

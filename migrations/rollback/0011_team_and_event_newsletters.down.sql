@@ -1,0 +1,5 @@
+DROP INDEX IF EXISTS idx_newsletter_campaign_delivery;
+DROP TABLE IF EXISTS newsletter_campaigns;
+ALTER TABLE newsletter_delivery_settings DROP COLUMN last_event_workflow_error;
+ALTER TABLE newsletter_delivery_settings DROP COLUMN last_event_workflow_at;
+ALTER TABLE newsletter_delivery_settings DROP COLUMN event_workflow_enabled;

@@ -1,244 +1,97 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
-import { GALLERY, GALLERY_CATEGORIES, IMAGES } from "@/data/church";
+import { createFileRoute, getRouteApi, Link } from "@tanstack/react-router";
+import { ArrowRight, Calendar, Images } from "lucide-react";
 import { PageHero } from "./about";
+import { IMAGES } from "@/data/church";
+import { getPublicGalleryAlbums } from "@/lib/api/content.functions";
+import { absoluteUrl } from "@/lib/seo";
 
 export const Route = createFileRoute("/gallery")({
+  loader: () => getPublicGalleryAlbums(),
   head: () => ({
     meta: [
       { title: "Gallery — Anglican Church of Epiphany" },
       {
         name: "description",
-        content: "Photos and videos from worship, outreach, and community life at Epiphany.",
+        content:
+          "See worship, outreach, fellowship, and community life at Anglican Church of the Epiphany in Houston.",
       },
-      { property: "og:url", content: "/gallery" },
+      { property: "og:url", content: absoluteUrl("/gallery") },
+      { property: "og:image", content: absoluteUrl(IMAGES.congregation) },
     ],
-    links: [{ rel: "canonical", href: "/gallery" }],
+    links: [{ rel: "canonical", href: absoluteUrl("/gallery") }],
   }),
   component: GalleryPage,
 });
 
-const HEIGHTS = [420, 480, 520, 560, 600, 620, 380, 500, 440];
-const SWIPE_THRESHOLD = 50;
-
 function GalleryPage() {
-  const [cat, setCat] = useState<string>("All");
-  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
-
-  const filtered = useMemo(
-    () => (cat === "All" ? GALLERY : GALLERY.filter((p) => p.category === cat)),
-    [cat],
-  );
-
-  const triggerRefs = useRef<Array<HTMLButtonElement | null>>([]);
-  const closeBtnRef = useRef<HTMLButtonElement | null>(null);
-  const lastTriggerIndex = useRef<number | null>(null);
-  const touchStartX = useRef<number | null>(null);
-
-  const open = useCallback((i: number) => {
-    lastTriggerIndex.current = i;
-    setLightboxIndex(i);
-  }, []);
-
-  const close = useCallback(() => setLightboxIndex(null), []);
-
-  const next = useCallback(() => {
-    setLightboxIndex((i) => (i === null ? i : (i + 1) % filtered.length));
-  }, [filtered.length]);
-
-  const prev = useCallback(() => {
-    setLightboxIndex((i) => (i === null ? i : (i - 1 + filtered.length) % filtered.length));
-  }, [filtered.length]);
-
-  // Keyboard navigation
-  useEffect(() => {
-    if (lightboxIndex === null) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        e.preventDefault();
-        close();
-      } else if (e.key === "ArrowRight") {
-        e.preventDefault();
-        next();
-      } else if (e.key === "ArrowLeft") {
-        e.preventDefault();
-        prev();
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [lightboxIndex, close, next, prev]);
-
-  // Focus management: move focus into lightbox on open, restore on close
-  useEffect(() => {
-    if (lightboxIndex !== null) {
-      const prevActive = document.activeElement as HTMLElement | null;
-      // Defer until the close button is mounted
-      const id = window.setTimeout(() => closeBtnRef.current?.focus(), 0);
-      const prevOverflow = document.body.style.overflow;
-      document.body.style.overflow = "hidden";
-      return () => {
-        window.clearTimeout(id);
-        document.body.style.overflow = prevOverflow;
-        const idx = lastTriggerIndex.current;
-        const trigger = idx !== null ? triggerRefs.current[idx] : null;
-        (trigger ?? prevActive)?.focus?.();
-      };
-    }
-  }, [lightboxIndex]);
-
-  const onTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0]?.clientX ?? null;
-  };
-  const onTouchEnd = (e: React.TouchEvent) => {
-    if (touchStartX.current === null) return;
-    const dx = (e.changedTouches[0]?.clientX ?? 0) - touchStartX.current;
-    touchStartX.current = null;
-    if (Math.abs(dx) < SWIPE_THRESHOLD) return;
-    if (dx < 0) next();
-    else prev();
-  };
-
-  const current = lightboxIndex !== null ? filtered[lightboxIndex] : null;
-
+  const albums = Route.useLoaderData();
+  const { siteSettings } = getRouteApi("__root__").useLoaderData();
+  const hero = siteSettings.pages.gallery;
   return (
     <>
       <PageHero
-        eyebrow="Gallery"
-        title="Moments from our life together"
-        image={IMAGES.congregation}
+        eyebrow={hero.eyebrow}
+        title={hero.title}
+        subtitle={hero.subtitle}
+        image={hero.imagePath || IMAGES.congregation}
       />
-
-      <section className="container-page py-16">
-        {GALLERY_CATEGORIES.length > 1 && (
-          <div className="flex flex-wrap gap-2 mb-10">
-            {GALLERY_CATEGORIES.map((c) => (
-              <button
-                key={c}
-                onClick={() => setCat(c)}
-                className={`px-4 py-2 text-sm rounded-full border transition ${
-                  cat === c
-                    ? "bg-primary text-primary-foreground border-primary"
-                    : "border-border hover:bg-accent"
-                }`}
-              >
-                {c}
-              </button>
-            ))}
+      <section className="container-page py-16 md:py-24">
+        {!albums.length && (
+          <div className="mx-auto max-w-2xl rounded-2xl border bg-card p-10 text-center">
+            <Images className="mx-auto size-10 text-gold" aria-hidden />
+            <h2 className="mt-4 font-display text-2xl">New photographs are coming soon</h2>
+            <p className="mt-3 text-muted-foreground">
+              We are preparing albums from worship and community life.
+            </p>
           </div>
         )}
-
-        {filtered.length === 0 ? (
-          <p className="text-muted-foreground">
-            No photos yet. Drop images into <code>src/assets/galleryPictures/</code> to populate the
-            gallery.
-          </p>
-        ) : (
-          <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 [&>*]:mb-4">
-            {filtered.map((p, i) => (
-              <button
-                key={p.id}
-                ref={(el) => {
-                  triggerRefs.current[i] = el;
-                }}
-                onClick={() => open(i)}
-                aria-label={`Open photo: ${p.alt}`}
-                className="block w-full overflow-hidden rounded-xl group break-inside-avoid focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-              >
-                <img
-                  src={p.src}
-                  alt={p.alt}
-                  loading="lazy"
-                  style={{ height: HEIGHTS[i % HEIGHTS.length] }}
-                  className="w-full object-cover group-hover:scale-105 transition-transform duration-700"
-                />
-              </button>
-            ))}
-          </div>
-        )}
-
-        {/*<div className="mt-20">*/}
-        {/*  <h2 className="font-display text-3xl md:text-4xl">Video gallery</h2>*/}
-        {/*  <div className="mt-8 grid md:grid-cols-2 gap-6">*/}
-        {/*    {[1, 2].map((i) => (*/}
-        {/*      <div key={i} className="aspect-video rounded-2xl overflow-hidden bg-primary">*/}
-        {/*        <iframe*/}
-        {/*          className="size-full"*/}
-        {/*          src="https://www.youtube.com/embed/dQw4w9WgXcQ"*/}
-        {/*          title={`Church video ${i}`}*/}
-        {/*          loading="lazy"*/}
-        {/*          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"*/}
-        {/*          allowFullScreen*/}
-        {/*        />*/}
-        {/*      </div>*/}
-        {/*    ))}*/}
-        {/*  </div>*/}
-        {/*</div>*/}
-      </section>
-
-      {current && (
-        <div
-          className="fixed inset-0 z-50 grid place-items-center bg-black/90 p-4"
-          role="dialog"
-          aria-modal="true"
-          aria-label={`Photo: ${current.alt}`}
-          onClick={close}
-          onTouchStart={onTouchStart}
-          onTouchEnd={onTouchEnd}
-        >
-          <button
-            ref={closeBtnRef}
-            aria-label="Close lightbox"
-            onClick={(e) => {
-              e.stopPropagation();
-              close();
-            }}
-            className="absolute top-4 right-4 size-11 grid place-items-center rounded-full bg-white/10 text-white hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
-          >
-            <X />
-          </button>
-
-          {filtered.length > 1 && (
-            <>
-              <button
-                aria-label="Previous photo"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  prev();
-                }}
-                className="absolute left-4 top-1/2 -translate-y-1/2 size-11 grid place-items-center rounded-full bg-white/10 text-white hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
-              >
-                <ChevronLeft />
-              </button>
-              <button
-                aria-label="Next photo"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  next();
-                }}
-                className="absolute right-4 top-1/2 -translate-y-1/2 size-11 grid place-items-center rounded-full bg-white/10 text-white hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
-              >
-                <ChevronRight />
-              </button>
-            </>
-          )}
-
-          <figure
-            onClick={(e) => e.stopPropagation()}
-            className="max-h-[90vh] max-w-[90vw] flex flex-col items-center gap-3"
-          >
-            <img
-              src={current.src}
-              alt={current.alt}
-              className="max-h-[80vh] max-w-[90vw] object-contain rounded-xl"
-            />
-            <figcaption className="text-white/80 text-sm" aria-live="polite">
-              {current.alt} · {lightboxIndex! + 1} / {filtered.length}
-            </figcaption>
-          </figure>
+        <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
+          {albums.map((album) => (
+            <article
+              key={album.id}
+              className="group overflow-hidden rounded-2xl border bg-card shadow-sm"
+            >
+              <Link to="/gallery/$id" params={{ id: album.slug }} className="block">
+                <div className="aspect-[4/3] overflow-hidden">
+                  <img
+                    src={album.coverThumbnail}
+                    srcSet={`${album.coverThumbnail} 640w, ${album.coverImage} 1600w`}
+                    sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                    alt={album.coverImageAlt}
+                    width={album.coverWidth ?? undefined}
+                    height={album.coverHeight ?? undefined}
+                    loading="lazy"
+                    className="size-full object-cover transition duration-700 group-hover:scale-105"
+                  />
+                </div>
+                <div className="p-6">
+                  {album.eventDate && (
+                    <p className="flex items-center gap-2 text-xs uppercase tracking-wider text-burgundy">
+                      <Calendar className="size-4" />
+                      {new Intl.DateTimeFormat("en-US", {
+                        timeZone: "UTC",
+                        month: "long",
+                        day: "numeric",
+                        year: "numeric",
+                      }).format(new Date(`${album.eventDate}T00:00:00Z`))}
+                    </p>
+                  )}
+                  <h2 className="mt-2 font-display text-2xl">{album.title}</h2>
+                  <p className="mt-3 line-clamp-3 text-sm text-muted-foreground">{album.summary}</p>
+                  <p className="mt-5 flex items-center justify-between text-sm font-medium text-primary">
+                    <span>
+                      {album.photoCount} photo{album.photoCount === 1 ? "" : "s"}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      View album <ArrowRight className="size-4" />
+                    </span>
+                  </p>
+                </div>
+              </Link>
+            </article>
+          ))}
         </div>
-      )}
+      </section>
     </>
   );
 }

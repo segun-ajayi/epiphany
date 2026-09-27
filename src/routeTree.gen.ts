@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VisitRouteImport } from './routes/visit'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SermonsRouteImport } from './routes/sermons'
 import { Route as MinistriesRouteImport } from './routes/ministries'
@@ -16,11 +17,40 @@ import { Route as GiveRouteImport } from './routes/give'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SermonsIdRouteImport } from './routes/sermons_.$id'
+import { Route as NewsletterWelcomeRouteImport } from './routes/newsletter_.welcome'
+import { Route as MinistriesIdRouteImport } from './routes/ministries_.$id'
+import { Route as MediaIdRouteImport } from './routes/media.$id'
+import { Route as GalleryIdRouteImport } from './routes/gallery_.$id'
 import { Route as EventsIdRouteImport } from './routes/events_.$id'
+import { Route as ApiRegistrationsRouteImport } from './routes/api.registrations'
+import { Route as ApiNewsletterRouteImport } from './routes/api.newsletter'
+import { Route as ApiContactRouteImport } from './routes/api.contact'
+import { Route as AdminResetPasswordRouteImport } from './routes/admin_.reset-password'
+import { Route as NewsletterEventsSlugRouteImport } from './routes/newsletter_.events.$slug'
+import { Route as ApiGivingReceiptRequestsRouteImport } from './routes/api.giving.receipt-requests'
+import { Route as ApiAdminTeamRouteImport } from './routes/api.admin.team'
+import { Route as ApiAdminSiteSettingsMediaRouteImport } from './routes/api.admin.site-settings-media'
+import { Route as ApiAdminSiteSettingsRouteImport } from './routes/api.admin.site-settings'
+import { Route as ApiAdminRegistrationsRouteImport } from './routes/api.admin.registrations'
+import { Route as ApiAdminNewsletterRouteImport } from './routes/api.admin.newsletter'
+import { Route as ApiAdminLeadershipRouteImport } from './routes/api.admin.leadership'
+import { Route as ApiAdminGivingMediaRouteImport } from './routes/api.admin.giving-media'
+import { Route as ApiAdminGivingRouteImport } from './routes/api.admin.giving'
+import { Route as ApiAdminGalleryMediaRouteImport } from './routes/api.admin.gallery-media'
+import { Route as ApiAdminGalleryRouteImport } from './routes/api.admin.gallery'
+import { Route as ApiAdminContentRouteImport } from './routes/api.admin.content'
+import { Route as ApiAdminContactRouteImport } from './routes/api.admin.contact'
+import { Route as ApiAdminAuthActionRouteImport } from './routes/api.admin.auth.$action'
 
+const VisitRoute = VisitRouteImport.update({
+  id: '/visit',
+  path: '/visit',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
@@ -56,6 +86,11 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -71,15 +106,133 @@ const SermonsIdRoute = SermonsIdRouteImport.update({
   path: '/sermons/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NewsletterWelcomeRoute = NewsletterWelcomeRouteImport.update({
+  id: '/newsletter_/welcome',
+  path: '/newsletter/welcome',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MinistriesIdRoute = MinistriesIdRouteImport.update({
+  id: '/ministries_/$id',
+  path: '/ministries/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MediaIdRoute = MediaIdRouteImport.update({
+  id: '/media/$id',
+  path: '/media/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GalleryIdRoute = GalleryIdRouteImport.update({
+  id: '/gallery_/$id',
+  path: '/gallery/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EventsIdRoute = EventsIdRouteImport.update({
   id: '/events_/$id',
   path: '/events/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiRegistrationsRoute = ApiRegistrationsRouteImport.update({
+  id: '/api/registrations',
+  path: '/api/registrations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiNewsletterRoute = ApiNewsletterRouteImport.update({
+  id: '/api/newsletter',
+  path: '/api/newsletter',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiContactRoute = ApiContactRouteImport.update({
+  id: '/api/contact',
+  path: '/api/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminResetPasswordRoute = AdminResetPasswordRouteImport.update({
+  id: '/admin_/reset-password',
+  path: '/admin/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewsletterEventsSlugRoute = NewsletterEventsSlugRouteImport.update({
+  id: '/newsletter_/events/$slug',
+  path: '/newsletter/events/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiGivingReceiptRequestsRoute =
+  ApiGivingReceiptRequestsRouteImport.update({
+    id: '/api/giving/receipt-requests',
+    path: '/api/giving/receipt-requests',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiAdminTeamRoute = ApiAdminTeamRouteImport.update({
+  id: '/api/admin/team',
+  path: '/api/admin/team',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAdminSiteSettingsMediaRoute =
+  ApiAdminSiteSettingsMediaRouteImport.update({
+    id: '/api/admin/site-settings-media',
+    path: '/api/admin/site-settings-media',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiAdminSiteSettingsRoute = ApiAdminSiteSettingsRouteImport.update({
+  id: '/api/admin/site-settings',
+  path: '/api/admin/site-settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAdminRegistrationsRoute = ApiAdminRegistrationsRouteImport.update({
+  id: '/api/admin/registrations',
+  path: '/api/admin/registrations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAdminNewsletterRoute = ApiAdminNewsletterRouteImport.update({
+  id: '/api/admin/newsletter',
+  path: '/api/admin/newsletter',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAdminLeadershipRoute = ApiAdminLeadershipRouteImport.update({
+  id: '/api/admin/leadership',
+  path: '/api/admin/leadership',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAdminGivingMediaRoute = ApiAdminGivingMediaRouteImport.update({
+  id: '/api/admin/giving-media',
+  path: '/api/admin/giving-media',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAdminGivingRoute = ApiAdminGivingRouteImport.update({
+  id: '/api/admin/giving',
+  path: '/api/admin/giving',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAdminGalleryMediaRoute = ApiAdminGalleryMediaRouteImport.update({
+  id: '/api/admin/gallery-media',
+  path: '/api/admin/gallery-media',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAdminGalleryRoute = ApiAdminGalleryRouteImport.update({
+  id: '/api/admin/gallery',
+  path: '/api/admin/gallery',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAdminContentRoute = ApiAdminContentRouteImport.update({
+  id: '/api/admin/content',
+  path: '/api/admin/content',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAdminContactRoute = ApiAdminContactRouteImport.update({
+  id: '/api/admin/contact',
+  path: '/api/admin/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAdminAuthActionRoute = ApiAdminAuthActionRouteImport.update({
+  id: '/api/admin/auth/$action',
+  path: '/api/admin/auth/$action',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRoute
   '/contact': typeof ContactRoute
   '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
@@ -87,12 +240,37 @@ export interface FileRoutesByFullPath {
   '/ministries': typeof MinistriesRoute
   '/sermons': typeof SermonsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/visit': typeof VisitRoute
+  '/admin/reset-password': typeof AdminResetPasswordRoute
+  '/api/contact': typeof ApiContactRoute
+  '/api/newsletter': typeof ApiNewsletterRoute
+  '/api/registrations': typeof ApiRegistrationsRoute
   '/events/$id': typeof EventsIdRoute
+  '/gallery/$id': typeof GalleryIdRoute
+  '/media/$id': typeof MediaIdRoute
+  '/ministries/$id': typeof MinistriesIdRoute
+  '/newsletter/welcome': typeof NewsletterWelcomeRoute
   '/sermons/$id': typeof SermonsIdRoute
+  '/api/admin/contact': typeof ApiAdminContactRoute
+  '/api/admin/content': typeof ApiAdminContentRoute
+  '/api/admin/gallery': typeof ApiAdminGalleryRoute
+  '/api/admin/gallery-media': typeof ApiAdminGalleryMediaRoute
+  '/api/admin/giving': typeof ApiAdminGivingRoute
+  '/api/admin/giving-media': typeof ApiAdminGivingMediaRoute
+  '/api/admin/leadership': typeof ApiAdminLeadershipRoute
+  '/api/admin/newsletter': typeof ApiAdminNewsletterRoute
+  '/api/admin/registrations': typeof ApiAdminRegistrationsRoute
+  '/api/admin/site-settings': typeof ApiAdminSiteSettingsRoute
+  '/api/admin/site-settings-media': typeof ApiAdminSiteSettingsMediaRoute
+  '/api/admin/team': typeof ApiAdminTeamRoute
+  '/api/giving/receipt-requests': typeof ApiGivingReceiptRequestsRoute
+  '/newsletter/events/$slug': typeof NewsletterEventsSlugRoute
+  '/api/admin/auth/$action': typeof ApiAdminAuthActionRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRoute
   '/contact': typeof ContactRoute
   '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
@@ -100,13 +278,38 @@ export interface FileRoutesByTo {
   '/ministries': typeof MinistriesRoute
   '/sermons': typeof SermonsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/visit': typeof VisitRoute
+  '/admin/reset-password': typeof AdminResetPasswordRoute
+  '/api/contact': typeof ApiContactRoute
+  '/api/newsletter': typeof ApiNewsletterRoute
+  '/api/registrations': typeof ApiRegistrationsRoute
   '/events/$id': typeof EventsIdRoute
+  '/gallery/$id': typeof GalleryIdRoute
+  '/media/$id': typeof MediaIdRoute
+  '/ministries/$id': typeof MinistriesIdRoute
+  '/newsletter/welcome': typeof NewsletterWelcomeRoute
   '/sermons/$id': typeof SermonsIdRoute
+  '/api/admin/contact': typeof ApiAdminContactRoute
+  '/api/admin/content': typeof ApiAdminContentRoute
+  '/api/admin/gallery': typeof ApiAdminGalleryRoute
+  '/api/admin/gallery-media': typeof ApiAdminGalleryMediaRoute
+  '/api/admin/giving': typeof ApiAdminGivingRoute
+  '/api/admin/giving-media': typeof ApiAdminGivingMediaRoute
+  '/api/admin/leadership': typeof ApiAdminLeadershipRoute
+  '/api/admin/newsletter': typeof ApiAdminNewsletterRoute
+  '/api/admin/registrations': typeof ApiAdminRegistrationsRoute
+  '/api/admin/site-settings': typeof ApiAdminSiteSettingsRoute
+  '/api/admin/site-settings-media': typeof ApiAdminSiteSettingsMediaRoute
+  '/api/admin/team': typeof ApiAdminTeamRoute
+  '/api/giving/receipt-requests': typeof ApiGivingReceiptRequestsRoute
+  '/newsletter/events/$slug': typeof NewsletterEventsSlugRoute
+  '/api/admin/auth/$action': typeof ApiAdminAuthActionRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRoute
   '/contact': typeof ContactRoute
   '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
@@ -114,14 +317,39 @@ export interface FileRoutesById {
   '/ministries': typeof MinistriesRoute
   '/sermons': typeof SermonsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/visit': typeof VisitRoute
+  '/admin_/reset-password': typeof AdminResetPasswordRoute
+  '/api/contact': typeof ApiContactRoute
+  '/api/newsletter': typeof ApiNewsletterRoute
+  '/api/registrations': typeof ApiRegistrationsRoute
   '/events_/$id': typeof EventsIdRoute
+  '/gallery_/$id': typeof GalleryIdRoute
+  '/media/$id': typeof MediaIdRoute
+  '/ministries_/$id': typeof MinistriesIdRoute
+  '/newsletter_/welcome': typeof NewsletterWelcomeRoute
   '/sermons_/$id': typeof SermonsIdRoute
+  '/api/admin/contact': typeof ApiAdminContactRoute
+  '/api/admin/content': typeof ApiAdminContentRoute
+  '/api/admin/gallery': typeof ApiAdminGalleryRoute
+  '/api/admin/gallery-media': typeof ApiAdminGalleryMediaRoute
+  '/api/admin/giving': typeof ApiAdminGivingRoute
+  '/api/admin/giving-media': typeof ApiAdminGivingMediaRoute
+  '/api/admin/leadership': typeof ApiAdminLeadershipRoute
+  '/api/admin/newsletter': typeof ApiAdminNewsletterRoute
+  '/api/admin/registrations': typeof ApiAdminRegistrationsRoute
+  '/api/admin/site-settings': typeof ApiAdminSiteSettingsRoute
+  '/api/admin/site-settings-media': typeof ApiAdminSiteSettingsMediaRoute
+  '/api/admin/team': typeof ApiAdminTeamRoute
+  '/api/giving/receipt-requests': typeof ApiGivingReceiptRequestsRoute
+  '/newsletter_/events/$slug': typeof NewsletterEventsSlugRoute
+  '/api/admin/auth/$action': typeof ApiAdminAuthActionRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/about'
+    | '/admin'
     | '/contact'
     | '/events'
     | '/gallery'
@@ -129,12 +357,37 @@ export interface FileRouteTypes {
     | '/ministries'
     | '/sermons'
     | '/sitemap.xml'
+    | '/visit'
+    | '/admin/reset-password'
+    | '/api/contact'
+    | '/api/newsletter'
+    | '/api/registrations'
     | '/events/$id'
+    | '/gallery/$id'
+    | '/media/$id'
+    | '/ministries/$id'
+    | '/newsletter/welcome'
     | '/sermons/$id'
+    | '/api/admin/contact'
+    | '/api/admin/content'
+    | '/api/admin/gallery'
+    | '/api/admin/gallery-media'
+    | '/api/admin/giving'
+    | '/api/admin/giving-media'
+    | '/api/admin/leadership'
+    | '/api/admin/newsletter'
+    | '/api/admin/registrations'
+    | '/api/admin/site-settings'
+    | '/api/admin/site-settings-media'
+    | '/api/admin/team'
+    | '/api/giving/receipt-requests'
+    | '/newsletter/events/$slug'
+    | '/api/admin/auth/$action'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
+    | '/admin'
     | '/contact'
     | '/events'
     | '/gallery'
@@ -142,12 +395,37 @@ export interface FileRouteTypes {
     | '/ministries'
     | '/sermons'
     | '/sitemap.xml'
+    | '/visit'
+    | '/admin/reset-password'
+    | '/api/contact'
+    | '/api/newsletter'
+    | '/api/registrations'
     | '/events/$id'
+    | '/gallery/$id'
+    | '/media/$id'
+    | '/ministries/$id'
+    | '/newsletter/welcome'
     | '/sermons/$id'
+    | '/api/admin/contact'
+    | '/api/admin/content'
+    | '/api/admin/gallery'
+    | '/api/admin/gallery-media'
+    | '/api/admin/giving'
+    | '/api/admin/giving-media'
+    | '/api/admin/leadership'
+    | '/api/admin/newsletter'
+    | '/api/admin/registrations'
+    | '/api/admin/site-settings'
+    | '/api/admin/site-settings-media'
+    | '/api/admin/team'
+    | '/api/giving/receipt-requests'
+    | '/newsletter/events/$slug'
+    | '/api/admin/auth/$action'
   id:
     | '__root__'
     | '/'
     | '/about'
+    | '/admin'
     | '/contact'
     | '/events'
     | '/gallery'
@@ -155,13 +433,38 @@ export interface FileRouteTypes {
     | '/ministries'
     | '/sermons'
     | '/sitemap.xml'
+    | '/visit'
+    | '/admin_/reset-password'
+    | '/api/contact'
+    | '/api/newsletter'
+    | '/api/registrations'
     | '/events_/$id'
+    | '/gallery_/$id'
+    | '/media/$id'
+    | '/ministries_/$id'
+    | '/newsletter_/welcome'
     | '/sermons_/$id'
+    | '/api/admin/contact'
+    | '/api/admin/content'
+    | '/api/admin/gallery'
+    | '/api/admin/gallery-media'
+    | '/api/admin/giving'
+    | '/api/admin/giving-media'
+    | '/api/admin/leadership'
+    | '/api/admin/newsletter'
+    | '/api/admin/registrations'
+    | '/api/admin/site-settings'
+    | '/api/admin/site-settings-media'
+    | '/api/admin/team'
+    | '/api/giving/receipt-requests'
+    | '/newsletter_/events/$slug'
+    | '/api/admin/auth/$action'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AdminRoute: typeof AdminRoute
   ContactRoute: typeof ContactRoute
   EventsRoute: typeof EventsRoute
   GalleryRoute: typeof GalleryRoute
@@ -169,12 +472,43 @@ export interface RootRouteChildren {
   MinistriesRoute: typeof MinistriesRoute
   SermonsRoute: typeof SermonsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  VisitRoute: typeof VisitRoute
+  AdminResetPasswordRoute: typeof AdminResetPasswordRoute
+  ApiContactRoute: typeof ApiContactRoute
+  ApiNewsletterRoute: typeof ApiNewsletterRoute
+  ApiRegistrationsRoute: typeof ApiRegistrationsRoute
   EventsIdRoute: typeof EventsIdRoute
+  GalleryIdRoute: typeof GalleryIdRoute
+  MediaIdRoute: typeof MediaIdRoute
+  MinistriesIdRoute: typeof MinistriesIdRoute
+  NewsletterWelcomeRoute: typeof NewsletterWelcomeRoute
   SermonsIdRoute: typeof SermonsIdRoute
+  ApiAdminContactRoute: typeof ApiAdminContactRoute
+  ApiAdminContentRoute: typeof ApiAdminContentRoute
+  ApiAdminGalleryRoute: typeof ApiAdminGalleryRoute
+  ApiAdminGalleryMediaRoute: typeof ApiAdminGalleryMediaRoute
+  ApiAdminGivingRoute: typeof ApiAdminGivingRoute
+  ApiAdminGivingMediaRoute: typeof ApiAdminGivingMediaRoute
+  ApiAdminLeadershipRoute: typeof ApiAdminLeadershipRoute
+  ApiAdminNewsletterRoute: typeof ApiAdminNewsletterRoute
+  ApiAdminRegistrationsRoute: typeof ApiAdminRegistrationsRoute
+  ApiAdminSiteSettingsRoute: typeof ApiAdminSiteSettingsRoute
+  ApiAdminSiteSettingsMediaRoute: typeof ApiAdminSiteSettingsMediaRoute
+  ApiAdminTeamRoute: typeof ApiAdminTeamRoute
+  ApiGivingReceiptRequestsRoute: typeof ApiGivingReceiptRequestsRoute
+  NewsletterEventsSlugRoute: typeof NewsletterEventsSlugRoute
+  ApiAdminAuthActionRoute: typeof ApiAdminAuthActionRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/visit': {
+      id: '/visit'
+      path: '/visit'
+      fullPath: '/visit'
+      preLoaderRoute: typeof VisitRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
@@ -224,6 +558,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -245,11 +586,172 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SermonsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/newsletter_/welcome': {
+      id: '/newsletter_/welcome'
+      path: '/newsletter/welcome'
+      fullPath: '/newsletter/welcome'
+      preLoaderRoute: typeof NewsletterWelcomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ministries_/$id': {
+      id: '/ministries_/$id'
+      path: '/ministries/$id'
+      fullPath: '/ministries/$id'
+      preLoaderRoute: typeof MinistriesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/media/$id': {
+      id: '/media/$id'
+      path: '/media/$id'
+      fullPath: '/media/$id'
+      preLoaderRoute: typeof MediaIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gallery_/$id': {
+      id: '/gallery_/$id'
+      path: '/gallery/$id'
+      fullPath: '/gallery/$id'
+      preLoaderRoute: typeof GalleryIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/events_/$id': {
       id: '/events_/$id'
       path: '/events/$id'
       fullPath: '/events/$id'
       preLoaderRoute: typeof EventsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/registrations': {
+      id: '/api/registrations'
+      path: '/api/registrations'
+      fullPath: '/api/registrations'
+      preLoaderRoute: typeof ApiRegistrationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/newsletter': {
+      id: '/api/newsletter'
+      path: '/api/newsletter'
+      fullPath: '/api/newsletter'
+      preLoaderRoute: typeof ApiNewsletterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/contact': {
+      id: '/api/contact'
+      path: '/api/contact'
+      fullPath: '/api/contact'
+      preLoaderRoute: typeof ApiContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin_/reset-password': {
+      id: '/admin_/reset-password'
+      path: '/admin/reset-password'
+      fullPath: '/admin/reset-password'
+      preLoaderRoute: typeof AdminResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/newsletter_/events/$slug': {
+      id: '/newsletter_/events/$slug'
+      path: '/newsletter/events/$slug'
+      fullPath: '/newsletter/events/$slug'
+      preLoaderRoute: typeof NewsletterEventsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/giving/receipt-requests': {
+      id: '/api/giving/receipt-requests'
+      path: '/api/giving/receipt-requests'
+      fullPath: '/api/giving/receipt-requests'
+      preLoaderRoute: typeof ApiGivingReceiptRequestsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/team': {
+      id: '/api/admin/team'
+      path: '/api/admin/team'
+      fullPath: '/api/admin/team'
+      preLoaderRoute: typeof ApiAdminTeamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/site-settings-media': {
+      id: '/api/admin/site-settings-media'
+      path: '/api/admin/site-settings-media'
+      fullPath: '/api/admin/site-settings-media'
+      preLoaderRoute: typeof ApiAdminSiteSettingsMediaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/site-settings': {
+      id: '/api/admin/site-settings'
+      path: '/api/admin/site-settings'
+      fullPath: '/api/admin/site-settings'
+      preLoaderRoute: typeof ApiAdminSiteSettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/registrations': {
+      id: '/api/admin/registrations'
+      path: '/api/admin/registrations'
+      fullPath: '/api/admin/registrations'
+      preLoaderRoute: typeof ApiAdminRegistrationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/newsletter': {
+      id: '/api/admin/newsletter'
+      path: '/api/admin/newsletter'
+      fullPath: '/api/admin/newsletter'
+      preLoaderRoute: typeof ApiAdminNewsletterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/leadership': {
+      id: '/api/admin/leadership'
+      path: '/api/admin/leadership'
+      fullPath: '/api/admin/leadership'
+      preLoaderRoute: typeof ApiAdminLeadershipRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/giving-media': {
+      id: '/api/admin/giving-media'
+      path: '/api/admin/giving-media'
+      fullPath: '/api/admin/giving-media'
+      preLoaderRoute: typeof ApiAdminGivingMediaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/giving': {
+      id: '/api/admin/giving'
+      path: '/api/admin/giving'
+      fullPath: '/api/admin/giving'
+      preLoaderRoute: typeof ApiAdminGivingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/gallery-media': {
+      id: '/api/admin/gallery-media'
+      path: '/api/admin/gallery-media'
+      fullPath: '/api/admin/gallery-media'
+      preLoaderRoute: typeof ApiAdminGalleryMediaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/gallery': {
+      id: '/api/admin/gallery'
+      path: '/api/admin/gallery'
+      fullPath: '/api/admin/gallery'
+      preLoaderRoute: typeof ApiAdminGalleryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/content': {
+      id: '/api/admin/content'
+      path: '/api/admin/content'
+      fullPath: '/api/admin/content'
+      preLoaderRoute: typeof ApiAdminContentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/contact': {
+      id: '/api/admin/contact'
+      path: '/api/admin/contact'
+      fullPath: '/api/admin/contact'
+      preLoaderRoute: typeof ApiAdminContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/auth/$action': {
+      id: '/api/admin/auth/$action'
+      path: '/api/admin/auth/$action'
+      fullPath: '/api/admin/auth/$action'
+      preLoaderRoute: typeof ApiAdminAuthActionRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -258,6 +760,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AdminRoute: AdminRoute,
   ContactRoute: ContactRoute,
   EventsRoute: EventsRoute,
   GalleryRoute: GalleryRoute,
@@ -265,8 +768,32 @@ const rootRouteChildren: RootRouteChildren = {
   MinistriesRoute: MinistriesRoute,
   SermonsRoute: SermonsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  VisitRoute: VisitRoute,
+  AdminResetPasswordRoute: AdminResetPasswordRoute,
+  ApiContactRoute: ApiContactRoute,
+  ApiNewsletterRoute: ApiNewsletterRoute,
+  ApiRegistrationsRoute: ApiRegistrationsRoute,
   EventsIdRoute: EventsIdRoute,
+  GalleryIdRoute: GalleryIdRoute,
+  MediaIdRoute: MediaIdRoute,
+  MinistriesIdRoute: MinistriesIdRoute,
+  NewsletterWelcomeRoute: NewsletterWelcomeRoute,
   SermonsIdRoute: SermonsIdRoute,
+  ApiAdminContactRoute: ApiAdminContactRoute,
+  ApiAdminContentRoute: ApiAdminContentRoute,
+  ApiAdminGalleryRoute: ApiAdminGalleryRoute,
+  ApiAdminGalleryMediaRoute: ApiAdminGalleryMediaRoute,
+  ApiAdminGivingRoute: ApiAdminGivingRoute,
+  ApiAdminGivingMediaRoute: ApiAdminGivingMediaRoute,
+  ApiAdminLeadershipRoute: ApiAdminLeadershipRoute,
+  ApiAdminNewsletterRoute: ApiAdminNewsletterRoute,
+  ApiAdminRegistrationsRoute: ApiAdminRegistrationsRoute,
+  ApiAdminSiteSettingsRoute: ApiAdminSiteSettingsRoute,
+  ApiAdminSiteSettingsMediaRoute: ApiAdminSiteSettingsMediaRoute,
+  ApiAdminTeamRoute: ApiAdminTeamRoute,
+  ApiGivingReceiptRequestsRoute: ApiGivingReceiptRequestsRoute,
+  NewsletterEventsSlugRoute: NewsletterEventsSlugRoute,
+  ApiAdminAuthActionRoute: ApiAdminAuthActionRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -13,6 +13,10 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { IMAGES } from "@/data/church";
+import { absoluteUrl, safeJsonLd, SITE } from "@/lib/seo";
+import { getPublicSiteSettings } from "@/lib/api/site-settings.functions";
+import { DEFAULT_SITE_SETTINGS } from "@/lib/site-settings/defaults";
 
 function NotFoundComponent() {
   return (
@@ -75,59 +79,115 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: () => ({
-    meta: [
-      { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Anglican Church of Epiphany, Houston, Texas." },
-      {
-        name: "description",
-        content:
-          "A modern, responsive church website for Anglican Church of Epiphany, Houston, Texas.",
-      },
-      { name: "author", content: "Pobats Solutions" },
-      { property: "og:title", content: "Anglican Church of Epiphany, Houston, Texas." },
-      {
-        property: "og:description",
-        content:
-          "A modern, responsive church website for Anglican Church of Epiphany, Houston, Texas.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@AcehouTX" },
-      { name: "twitter:title", content: "Anglican Church of Epiphany, Houston, Texas." },
-      {
-        name: "twitter:description",
-        content:
-          "A modern, responsive church website for Anglican Church of Epiphany, Houston, Texas.",
-      },
-      {
-        property: "og:image",
-        content: "/twitter.png",
-      },
-      {
-        name: "twitter:image",
-        content: "/twitter.png",
-      },
-    ],
-    links: [
-      {
-        rel: "stylesheet",
-        href: appCss,
-      },
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap",
-      },
-      {
-        rel: "icon",
-        type: "image/png",
-        href: "/faviconACE.png",
-      },
-    ],
-  }),
+  loader: async () => ({ siteSettings: await getPublicSiteSettings() }),
+  head: ({ loaderData }) => {
+    const settings = loaderData?.siteSettings ?? DEFAULT_SITE_SETTINGS;
+    return {
+      meta: [
+        { charSet: "utf-8" },
+        { name: "viewport", content: "width=device-width, initial-scale=1" },
+        { title: settings.defaultSeoTitle },
+        {
+          name: "description",
+          content: settings.defaultSeoDescription,
+        },
+        {
+          name: "robots",
+          content: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
+        },
+        { property: "og:site_name", content: settings.churchName },
+        { property: "og:locale", content: SITE.locale },
+        { property: "og:title", content: settings.defaultSeoTitle },
+        {
+          property: "og:description",
+          content: settings.defaultSeoDescription,
+        },
+        { property: "og:type", content: "website" },
+        { property: "og:url", content: SITE.origin },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: settings.defaultSeoTitle },
+        {
+          name: "twitter:description",
+          content: settings.defaultSeoDescription,
+        },
+        {
+          property: "og:image",
+          content: absoluteUrl(settings.socialImagePath),
+        },
+        {
+          name: "twitter:image",
+          content: absoluteUrl(settings.socialImagePath),
+        },
+      ],
+      links: [
+        {
+          rel: "stylesheet",
+          href: appCss,
+        },
+        { rel: "preconnect", href: "https://fonts.googleapis.com" },
+        { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+        {
+          rel: "stylesheet",
+          href: "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap",
+        },
+        {
+          rel: "icon",
+          type: "image/png",
+          href: "/faviconACE.png",
+        },
+      ],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: safeJsonLd({
+            "@context": "https://schema.org",
+            "@graph": [
+              {
+                "@type": "Organization",
+                "@id": `${SITE.origin}/#organization`,
+                name: settings.churchName,
+                alternateName: settings.shortName,
+                url: SITE.origin,
+                logo: {
+                  "@type": "ImageObject",
+                  url: absoluteUrl(settings.logoImagePath || IMAGES.logo),
+                  width: 512,
+                  height: 512,
+                },
+                email: settings.email,
+                telephone: settings.phone,
+                sameAs:
+                  [settings.facebookUrl, settings.instagramUrl, settings.youtubeUrl].filter(Boolean)
+                    .length > 0
+                    ? [settings.facebookUrl, settings.instagramUrl, settings.youtubeUrl].filter(
+                        Boolean,
+                      )
+                    : undefined,
+                address: {
+                  "@type": "PostalAddress",
+                  streetAddress: [settings.addressLine1, settings.addressLine2]
+                    .filter(Boolean)
+                    .join(", "),
+                  addressLocality: settings.city,
+                  addressRegion: settings.region,
+                  postalCode: settings.postalCode,
+                  addressCountry: settings.countryCode,
+                },
+              },
+              {
+                "@type": "WebSite",
+                "@id": `${SITE.origin}/#website`,
+                url: SITE.origin,
+                name: settings.churchName,
+                publisher: { "@id": `${SITE.origin}/#organization` },
+                inLanguage: "en-US",
+              },
+            ],
+          }),
+        },
+      ],
+    };
+  },
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
@@ -150,14 +210,21 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const { siteSettings } = Route.useLoaderData();
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SiteHeader />
-      <main id="main">
+      <a
+        href="#main"
+        className="fixed left-4 top-4 z-[100] -translate-y-24 rounded-md bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground shadow-lg transition-transform focus:translate-y-0"
+      >
+        Skip to main content
+      </a>
+      <SiteHeader settings={siteSettings} />
+      <main id="main" tabIndex={-1}>
         <Outlet />
       </main>
-      <SiteFooter />
+      <SiteFooter settings={siteSettings} />
     </QueryClientProvider>
   );
 }

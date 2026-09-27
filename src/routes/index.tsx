@@ -1,22 +1,30 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, getRouteApi, Link } from "@tanstack/react-router";
 import { ArrowRight, Calendar, MapPin, Play, Heart, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { NewsletterSignup } from "@/components/newsletter-signup";
 import {
-  CHURCH,
-  IMAGES,
-  SERVICE_TIMES,
-  MINISTRIES,
-  EVENTS,
-  SERMONS,
-  TESTIMONIALS,
-} from "@/data/church";
+  getPublicEvents,
+  getPublicMinistries,
+  getPublicSermons,
+} from "@/lib/api/content.functions";
+import { formatEventDate, formatEventTime } from "@/lib/content/event-format";
+import { IMAGES } from "@/data/church";
+import { formatSiteAddress } from "@/lib/site-settings/schemas";
+import { absoluteUrl, SITE } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
+  loader: async () => {
+    const [ministries, events, sermons] = await Promise.all([
+      getPublicMinistries(),
+      getPublicEvents(),
+      getPublicSermons(),
+    ]);
+    return { ministries, events, sermons };
+  },
   head: () => ({
     meta: [
-      { title: "Anglican Church of the Epiphany, HOUSTON" },
+      { title: "Anglican Church of the Epiphany | Houston, TX" },
       {
         name: "description",
         content:
@@ -28,23 +36,30 @@ export const Route = createFileRoute("/")({
         content: "Growing in faith, worship, and community in Houston, Texas.",
       },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "/" },
+      { property: "og:url", content: SITE.origin },
+      { property: "og:image", content: absoluteUrl(IMAGES.heroChurch) },
     ],
-    links: [{ rel: "canonical", href: "/" }],
+    links: [{ rel: "canonical", href: SITE.origin }],
   }),
   component: Home,
 });
 
+const rootRoute = getRouteApi("__root__");
+
 function Home() {
+  const { ministries, events, sermons } = Route.useLoaderData();
+  const { siteSettings } = rootRoute.useLoaderData();
+  const address = formatSiteAddress(siteSettings);
   return (
     <>
       {/* HERO */}
       <section className="relative -mt-16 md:-mt-20 min-h-[88vh] flex items-end overflow-hidden">
         <img
-          src={IMAGES.heroChurch}
+          src={siteSettings.home.heroImagePath || IMAGES.heroChurch}
           alt="Sanctuary interior of Anglican Church of Epiphany"
           width={1920}
           height={1280}
+          fetchPriority="high"
           className="absolute inset-0 size-full object-cover"
         />
         <div
@@ -58,15 +73,17 @@ function Home() {
 
         <div className="container-page relative z-10 pb-20 pt-32 md:pb-28 md:pt-40 text-primary-foreground">
           <p className="inline-flex items-center gap-2 text-xs md:text-sm uppercase tracking-[0.32em] text-gold">
-            <Sparkles className="size-4" /> {CHURCH.shortName}
+            <Sparkles className="size-4" /> {siteSettings.shortName}
           </p>
           <h1 className="mt-5 font-display text-xl sm:text-3xl md:text-5xl leading-[1.05] text-balance max-w-6xl">
-            Welcome to <span className="text-gold">{CHURCH.name}</span>
+            Welcome to <span className="text-gold">{siteSettings.churchName}</span>
           </h1>
-          <p className="mt-6 text-base md:text-sm max-w-2xl opacity-90">{CHURCH.tagline}</p>
+          <p className="mt-6 text-base md:text-sm max-w-2xl opacity-90">
+            {siteSettings.home.heroIntro}
+          </p>
           <div className="mt-10 flex flex-wrap gap-3">
             <Button asChild size="lg" variant="default">
-              <Link to="/contact">
+              <Link to="/visit">
                 Plan Your Visit <ArrowRight className="size-4" />
               </Link>
             </Button>
@@ -89,66 +106,23 @@ function Home() {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           <div>
             <p className="text-xs uppercase tracking-[0.28em] text-burgundy font-semibold">
-              A Word from our Rector
+              {siteSettings.home.welcomeEyebrow}
             </p>
             <h2 className="mt-3 font-display text-3xl md:text-5xl text-balance">
-              Welcome to Anglican Church of the Epiphany, Houston — Texas.
+              {siteSettings.home.welcomeTitle}
             </h2>
+            {siteSettings.home.welcomeBody.split(/\n\s*\n/).map((paragraph, index) => (
+              <p key={index} className="mt-6 text-muted-foreground leading-relaxed">
+                {paragraph}
+              </p>
+            ))}
             <p className="mt-6 text-muted-foreground leading-relaxed">
-              Grace and peace to you in the name of our Lord and Savior Jesus Christ.
-            </p>
-
-            <p className="mt-6 text-muted-foreground leading-relaxed">
-              It is my joy and privilege to welcome you to the Anglican Church of the Epiphany,
-              Houston, Texas, a vibrant community of faith where lives are transformed by God’s
-              love, His Word is faithfully preached, and His people are empowered to serve.
-            </p>
-
-            <p className="mt-6 text-muted-foreground leading-relaxed">
-              Whether you are seeking a deeper relationship with God, looking for a church family,
-              searching for hope in difficult times, or simply exploring the Christian faith, you
-              will find a warm and loving home here. At Epiphany, we believe that every person
-              matters to God and has a unique place in His kingdom.
-            </p>
-
-            <p className="mt-6 text-muted-foreground leading-relaxed">
-              Our mission is to proclaim the Gospel of Jesus Christ, nurture spiritual growth
-              through worship and discipleship, and extend God’s compassion to our community and
-              beyond. Through heartfelt worship, biblical teaching, prayer, fellowship, and
-              outreach, we strive to reflect the light of Christ in a world that desperately needs
-              His hope.
-            </p>
-
-            <p className="mt-6 text-muted-foreground leading-relaxed">
-              We are a diverse and welcoming congregation united by our faith in Jesus Christ and
-              our commitment to living out His teachings. No matter your background, age, or life
-              situation, there is a place for you here.
-            </p>
-
-            <p className="mt-6 text-muted-foreground leading-relaxed">
-              I personally invite you and your family to join us for worship and experience the joy
-              of Christian fellowship. Come and discover God’s purpose for your life, build
-              meaningful relationships, and grow in faith alongside fellow believers.
-            </p>
-
-            <p className="mt-6 text-muted-foreground leading-relaxed">
-              We look forward to welcoming you to the Anglican Church of the Epiphany, where faith
-              comes alive, hope is renewed, and lives are transformed through the power of Jesus
-              Christ.
-            </p>
-
-            <p className="mt-6 text-muted-foreground leading-relaxed">May God richly bless you.</p>
-
-            <p className="mt-6 text-muted-foreground leading-relaxed">
-              The Ven. Dr Isaac Ifedayo Olasehinde
-              <br />
-              B.Sc., B.Th, MBA, PhD. JP.
-              <br />
-              Rector
-              <br />
-              Anglican Church of the Epiphany
-              <br />
-              Houston, Texas
+              {siteSettings.home.welcomeName}
+              {siteSettings.home.welcomeRole.split("\n").map((line) => (
+                <span key={line} className="block">
+                  {line}
+                </span>
+              ))}
             </p>
             <Button asChild className="mt-8" variant="outline">
               <Link to="/about">
@@ -162,7 +136,7 @@ function Home() {
               aria-hidden
             />
             <img
-              src={IMAGES.churchExterior}
+              src={siteSettings.home.welcomeImagePath || IMAGES.churchExterior}
               alt="Exterior of the church"
               loading="lazy"
               width={1280}
@@ -177,14 +151,16 @@ function Home() {
       <section className="bg-primary text-primary-foreground py-20 md:py-28">
         <div className="container-page">
           <div className="text-center max-w-2xl mx-auto">
-            <p className="text-xs uppercase tracking-[0.28em] text-gold">Join Us</p>
-            <h2 className="mt-3 font-display text-3xl md:text-5xl">Service Times</h2>
-            <p className="mt-4 opacity-80">
-              We gather each week to worship. There's a place for you.
+            <p className="text-xs uppercase tracking-[0.28em] text-gold">
+              {siteSettings.home.servicesEyebrow}
             </p>
+            <h2 className="mt-3 font-display text-3xl md:text-5xl">
+              {siteSettings.home.servicesTitle}
+            </h2>
+            <p className="mt-4 opacity-80">{siteSettings.home.servicesIntro}</p>
           </div>
           <div className="mt-12 grid md:grid-cols-3 gap-6">
-            {SERVICE_TIMES.map((s) => (
+            {siteSettings.serviceTimes.map((s) => (
               <div
                 key={s.title}
                 className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur p-7 hover:bg-white/10 transition"
@@ -199,7 +175,7 @@ function Home() {
           <div className="mt-10 text-center">
             <Button asChild variant="hero" size="lg">
               <a
-                href={`https://maps.google.com/?q=${encodeURIComponent(CHURCH.address)}`}
+                href={`https://maps.google.com/?q=${encodeURIComponent(address)}`}
                 target="_blank"
                 rel="noreferrer"
               >
@@ -214,8 +190,12 @@ function Home() {
       <section className="container-page py-20 md:py-28">
         <div className="flex items-end justify-between flex-wrap gap-4">
           <div>
-            <p className="text-xs uppercase tracking-[0.28em] text-burgundy">Get Involved</p>
-            <h2 className="mt-2 font-display text-3xl md:text-5xl">Ministries at Epiphany</h2>
+            <p className="text-xs uppercase tracking-[0.28em] text-burgundy">
+              {siteSettings.home.ministriesEyebrow}
+            </p>
+            <h2 className="mt-2 font-display text-3xl md:text-5xl">
+              {siteSettings.home.ministriesTitle}
+            </h2>
           </div>
           <Button asChild variant="link">
             <Link to="/ministries">
@@ -224,20 +204,20 @@ function Home() {
           </Button>
         </div>
         <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {MINISTRIES.slice(0, 6).map((m) => (
-            <Link key={m.id} to="/ministries" className="group">
+          {ministries.slice(0, 6).map((m) => (
+            <Link key={m.id} to="/ministries/$id" params={{ id: m.slug }} className="group">
               <Card className="overflow-hidden h-full transition-all hover:shadow-elegant hover:-translate-y-1">
                 <div className="aspect-[4/3] overflow-hidden">
                   <img
                     src={m.image}
-                    alt={m.name}
+                    alt={m.imageAlt}
                     loading="lazy"
                     className="size-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                 </div>
                 <CardContent className="p-6">
                   <h3 className="font-display text-xl">{m.name}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground line-clamp-3">{m.description}</p>
+                  <p className="mt-2 text-sm text-muted-foreground line-clamp-3">{m.summary}</p>
                 </CardContent>
               </Card>
             </Link>
@@ -250,8 +230,12 @@ function Home() {
         <div className="container-page">
           <div className="flex items-end justify-between flex-wrap gap-4">
             <div>
-              <p className="text-xs uppercase tracking-[0.28em] text-burgundy">What's Happening</p>
-              <h2 className="mt-2 font-display text-3xl md:text-5xl">Upcoming Events</h2>
+              <p className="text-xs uppercase tracking-[0.28em] text-burgundy">
+                {siteSettings.home.eventsEyebrow}
+              </p>
+              <h2 className="mt-2 font-display text-3xl md:text-5xl">
+                {siteSettings.home.eventsTitle}
+              </h2>
             </div>
             <Button asChild variant="link">
               <Link to="/events">
@@ -260,33 +244,38 @@ function Home() {
             </Button>
           </div>
           <div className="mt-12 grid md:grid-cols-3 gap-6">
-            {EVENTS.slice(0, 3).map((e) => (
-              <Card key={e.id} className="overflow-hidden group">
-                <div className="aspect-[16/10] overflow-hidden">
-                  <img
-                    src={e.image}
-                    alt={e.title}
-                    loading="lazy"
-                    className="size-full object-cover group-hover:scale-105 transition-transform duration-700"
-                  />
-                </div>
-                <CardContent className="p-6">
-                  <p className="text-xs uppercase tracking-widest text-burgundy font-semibold">
-                    {e.category}
-                  </p>
-                  <h3 className="mt-2 font-display text-xl">{e.title}</h3>
-                  <div className="mt-3 flex items-center gap-2 text-sm text-muted-foreground">
-                    <Calendar className="size-4" />
-                    {new Date(e.date).toLocaleDateString("en-US", {
-                      month: "long",
-                      day: "numeric",
-                      year: "numeric",
-                    })}{" "}
-                    · {e.time}
+            {events.slice(0, 3).map((e) => (
+              <Link key={e.id} to="/events/$id" params={{ id: e.slug }} className="group">
+                <Card className="overflow-hidden h-full">
+                  <div className="aspect-[16/10] overflow-hidden">
+                    <img
+                      src={e.image}
+                      alt={e.imageAlt}
+                      loading="lazy"
+                      className="size-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    />
                   </div>
-                </CardContent>
-              </Card>
+                  <CardContent className="p-6">
+                    <p className="text-xs uppercase tracking-widest text-burgundy font-semibold">
+                      {e.category}
+                    </p>
+                    <h3 className="mt-2 font-display text-xl">{e.title}</h3>
+                    <div className="mt-3 flex items-center gap-2 text-sm text-muted-foreground">
+                      <Calendar className="size-4" />
+                      {formatEventDate(e)} · {formatEventTime(e)}
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
             ))}
+            {events.length === 0 && (
+              <div className="md:col-span-3 rounded-2xl border border-dashed border-border bg-card p-10 text-center">
+                <h3 className="font-display text-2xl">No upcoming events yet</h3>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  New gatherings will appear here as soon as they are published.
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -295,8 +284,12 @@ function Home() {
       <section className="container-page py-20 md:py-28">
         <div className="flex items-end justify-between flex-wrap gap-4">
           <div>
-            <p className="text-xs uppercase tracking-[0.28em] text-burgundy">From the Pulpit</p>
-            <h2 className="mt-2 font-display text-3xl md:text-5xl">Latest Sermons</h2>
+            <p className="text-xs uppercase tracking-[0.28em] text-burgundy">
+              {siteSettings.home.sermonsEyebrow}
+            </p>
+            <h2 className="mt-2 font-display text-3xl md:text-5xl">
+              {siteSettings.home.sermonsTitle}
+            </h2>
           </div>
           <Button asChild variant="link">
             <Link to="/sermons">
@@ -305,13 +298,13 @@ function Home() {
           </Button>
         </div>
         <div className="mt-12 grid md:grid-cols-3 gap-6">
-          {SERMONS.slice(0, 3).map((s) => (
-            <Link key={s.id} to="/sermons/$id" params={{ id: s.id }} className="group">
+          {sermons.slice(0, 3).map((s) => (
+            <Link key={s.id} to="/sermons/$id" params={{ id: s.slug }} className="group">
               <Card className="overflow-hidden h-full">
                 <div className="relative aspect-video overflow-hidden">
                   <img
-                    src={s.thumbnail}
-                    alt={s.title}
+                    src={s.image}
+                    alt={s.imageAlt}
                     loading="lazy"
                     className="size-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
@@ -324,7 +317,7 @@ function Home() {
                 <CardContent className="p-6">
                   <p className="text-xs text-muted-foreground">
                     {s.scripture} ·{" "}
-                    {new Date(s.date).toLocaleDateString("en-US", {
+                    {new Date(`${s.sermonDate}T00:00:00`).toLocaleDateString("en-US", {
                       month: "short",
                       day: "numeric",
                       year: "numeric",
@@ -336,6 +329,14 @@ function Home() {
               </Card>
             </Link>
           ))}
+          {sermons.length === 0 && (
+            <div className="md:col-span-3 rounded-2xl border border-dashed border-border bg-card p-10 text-center">
+              <h3 className="font-display text-2xl">Sermons are being prepared</h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Published recordings and notes will appear here when they are ready.
+              </p>
+            </div>
+          )}
         </div>
       </section>
 
@@ -347,12 +348,13 @@ function Home() {
             aria-hidden
           />
           <div className="relative max-w-2xl">
-            <p className="text-xs uppercase tracking-[0.28em] text-gold">Generosity</p>
-            <h2 className="mt-3 font-display text-3xl md:text-5xl">Give to support the mission</h2>
-            <p className="mt-4 opacity-90">
-              Your generosity sustains worship, forms disciples, and serves our city. Thank you for
-              partnering with us.
+            <p className="text-xs uppercase tracking-[0.28em] text-gold">
+              {siteSettings.home.givingEyebrow}
             </p>
+            <h2 className="mt-3 font-display text-3xl md:text-5xl">
+              {siteSettings.home.givingTitle}
+            </h2>
+            <p className="mt-4 opacity-90">{siteSettings.home.givingBody}</p>
             <Button asChild size="lg" variant="hero" className="mt-8">
               <Link to="/give">
                 <Heart className="size-4" /> Give Online
@@ -362,45 +364,31 @@ function Home() {
         </div>
       </section>
 
-      {/* TESTIMONIALS */}
-      <section className="container-page py-20 md:py-28">
-        <div className="text-center max-w-2xl mx-auto">
-          <p className="text-xs uppercase tracking-[0.28em] text-burgundy">Our Family</p>
-          <h2 className="mt-3 font-display text-3xl md:text-5xl">Stories from the parish</h2>
-        </div>
-        <div className="mt-12 grid md:grid-cols-3 gap-6">
-          {TESTIMONIALS.map((t) => (
-            <Card key={t.name} className="p-7">
-              <p className="text-5xl font-display text-gold leading-none">"</p>
-              <p className="text-foreground leading-relaxed">{t.quote}</p>
-              <p className="mt-6 text-sm font-medium text-muted-foreground">— {t.name}</p>
-            </Card>
-          ))}
-        </div>
-      </section>
+      {siteSettings.home.testimonials.length > 0 && (
+        <section className="container-page py-20 md:py-28">
+          <div className="text-center max-w-2xl mx-auto">
+            <p className="text-xs uppercase tracking-[0.28em] text-burgundy">
+              {siteSettings.home.testimonialsEyebrow}
+            </p>
+            <h2 className="mt-3 font-display text-3xl md:text-5xl">
+              {siteSettings.home.testimonialsTitle}
+            </h2>
+          </div>
+          <div className="mt-12 grid md:grid-cols-3 gap-6">
+            {siteSettings.home.testimonials.map((testimonial) => (
+              <Card key={testimonial.id} className="p-7">
+                <p className="text-5xl font-display text-gold leading-none">"</p>
+                <p className="text-foreground leading-relaxed">{testimonial.quote}</p>
+                <p className="mt-6 text-sm font-medium text-muted-foreground">
+                  — {testimonial.name}
+                </p>
+              </Card>
+            ))}
+          </div>
+        </section>
+      )}
 
-      {/* NEWSLETTER */}
-      <section className="container-page pb-24">
-        <div className="rounded-3xl border border-border bg-card p-10 md:p-14 text-center">
-          <h2 className="font-display text-3xl md:text-4xl">Stay connected</h2>
-          <p className="mt-3 text-muted-foreground max-w-xl mx-auto">
-            Subscribe to our weekly newsletter for upcoming events, devotionals, and parish updates.
-          </p>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              alert("Thanks! We'll be in touch.");
-            }}
-            className="mt-8 flex flex-col sm:flex-row gap-3 max-w-xl mx-auto"
-          >
-            <Input required type="text" placeholder="Your name" aria-label="Name" />
-            <Input required type="email" placeholder="Email address" aria-label="Email" />
-            <Button type="submit" variant="default">
-              Subscribe
-            </Button>
-          </form>
-        </div>
-      </section>
+      <NewsletterSignup />
     </>
   );
 }

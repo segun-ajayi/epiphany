@@ -3,10 +3,12 @@ import { useEffect, useState } from "react";
 import { Menu, X, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { CHURCH, IMAGES } from "@/data/church";
+import { IMAGES } from "@/data/church";
+import type { SiteSettings } from "@/lib/site-settings/schemas";
 
 const NAV = [
   { to: "/", label: "Home" },
+  { to: "/visit", label: "Visit" },
   { to: "/about", label: "About" },
   { to: "/ministries", label: "Ministries" },
   { to: "/sermons", label: "Sermons" },
@@ -25,6 +27,7 @@ function useDarkMode() {
     setDark(initial);
     document.documentElement.classList.toggle("dark", initial);
   }, []);
+
   const toggle = () => {
     setDark((d) => {
       const next = !d;
@@ -40,7 +43,7 @@ function useDarkMode() {
   return { dark, toggle };
 }
 
-export function SiteHeader() {
+export function SiteHeader({ settings }: { settings: SiteSettings }) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { dark, toggle } = useDarkMode();
@@ -52,6 +55,15 @@ export function SiteHeader() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    if (!open) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [open]);
+
   return (
     <header
       className={cn(
@@ -62,15 +74,17 @@ export function SiteHeader() {
       )}
     >
       <div className="container-page flex h-16 items-center justify-between gap-4 md:h-20">
-        <Link to="/" className="flex items-center gap-3 group" aria-label={CHURCH.name}>
+        <Link to="/" className="flex items-center gap-3 group" aria-label={settings.churchName}>
           <span className="relative grid place-items-center size-16 rounded-full shadow-elegant">
-            <img src={IMAGES.logo} />
+            <img src={settings.logoImagePath || IMAGES.logo} alt="" width={512} height={512} />
             {/*<span className="absolute inset-0 rounded-full ring-1 ring-gold/60" aria-hidden />*/}
           </span>
           <span className="hidden sm:flex flex-col leading-tight">
-            <span className="font-display text-base md:text-lg text-foreground">{CHURCH.name}</span>
+            <span className="font-display text-base md:text-lg text-foreground">
+              {settings.churchName}
+            </span>
             <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-              {CHURCH.shortName}
+              {settings.shortName}
             </span>
           </span>
         </Link>
@@ -104,6 +118,7 @@ export function SiteHeader() {
             onClick={() => setOpen((v) => !v)}
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
+            aria-controls="mobile-navigation"
             className="lg:hidden inline-flex size-10 items-center justify-center rounded-md text-foreground hover:bg-accent"
           >
             {open ? <X className="size-5" /> : <Menu className="size-5" />}
@@ -112,7 +127,7 @@ export function SiteHeader() {
       </div>
 
       {open && (
-        <div className="lg:hidden border-t border-border bg-background">
+        <div id="mobile-navigation" className="lg:hidden border-t border-border bg-background">
           <nav className="container-page py-3 flex flex-col" aria-label="Mobile">
             {NAV.map((item) => (
               <Link

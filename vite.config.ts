@@ -6,10 +6,20 @@
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
-export default defineConfig({
-  tanstackStart: {
-    // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
-    // nitro/vite builds from this
-    server: { entry: "server" },
-  },
-});
+export default (environment: { mode: string; command: "build" | "serve" }) =>
+  defineConfig({
+    nitro:
+      environment.mode === "node"
+        ? { preset: "node-server", output: { dir: ".output-node" } }
+        : { preset: "cloudflare-module" },
+    vite: {
+      define: {
+        __APP_PLATFORM__: JSON.stringify(environment.mode === "node" ? "node" : "cloudflare"),
+      },
+    },
+    tanstackStart: {
+      // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
+      // nitro/vite builds from this
+      server: { entry: "server" },
+    },
+  })(environment);

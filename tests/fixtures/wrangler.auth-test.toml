@@ -1,0 +1,10 @@
+name = "epiphany-auth-local-test"
+main = "auth-rehearsal.worker.ts"
+compatibility_date = "2024-11-01"
+compatibility_flags = ["nodejs_compat"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "epiphany-auth-test-only"
+database_id = "00000000-0000-4000-8000-000000000003"
+migrations_dir = "../../migrations"

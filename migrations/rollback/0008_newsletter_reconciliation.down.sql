@@ -1,0 +1,3 @@
+DROP INDEX IF EXISTS idx_newsletter_provider_reconciliation;
+ALTER TABLE newsletter_provider_sync DROP COLUMN last_reconcile_error;
+ALTER TABLE newsletter_provider_sync DROP COLUMN last_reconciled_at;

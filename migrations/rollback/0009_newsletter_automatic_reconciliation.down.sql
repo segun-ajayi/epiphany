@@ -1,0 +1,3 @@
+ALTER TABLE newsletter_delivery_settings DROP COLUMN last_auto_reconcile_error;
+ALTER TABLE newsletter_delivery_settings DROP COLUMN last_auto_reconcile_at;
+ALTER TABLE newsletter_delivery_settings DROP COLUMN auto_reconcile_enabled;

@@ -11,6 +11,13 @@ node_modules
 dist
 dist-ssr
 .output
+.output-node
+.output-locked-*/
+.data/
+backups/
+.env
+.env.*
+!.env.example
 .vinxi
 .tanstack/**
 .nitro
